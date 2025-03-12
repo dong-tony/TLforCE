@@ -13,7 +13,6 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error, r2_score
 
 # Load Excel file
-# Load dataset
 path = 'drive/MyDrive/Colab Notebooks/176 Final Project/'
 data = pd.read_excel(path+'pnasDataset.xlsx', engine='openpyxl',index_col=0, skiprows=1).fillna(0)
 
@@ -21,6 +20,8 @@ data = pd.read_excel(path+'pnasDataset.xlsx', engine='openpyxl',index_col=0, ski
 print(data.iloc[:,23])
 print(data.iloc[:,9])
 print(data.iloc[:,22])
+
+################### Set up model ######################
 
 # Define features (X) and target variable (y)
 y = data.iloc[:, 23].to_numpy()
@@ -43,7 +44,7 @@ r2 = r2_score(y_test, y_pred)
 print(f"Mean Squared Error (MSE): {mse:.2f}")
 print(f"R² Score: {r2:.2f}")
 
-# Plot actual vs. predicted values
+######################## Plot predicted vs. actual values #########################
 plt.scatter(y_test, y_pred, alpha=0.7, label='Actual vs. Predicted')
 plt.xlabel("Actual LCE Values")
 plt.ylabel("Predicted LCE Values")
@@ -66,7 +67,7 @@ plt.text(1.5, 0.95, f"R² Score: {r2:.2f}", size=20, rotation=0.,
 plt.legend()
 plt.show()
 
-"""Cross Validation of Random Forest Model"""
+#################### Cross Validation of Random Forest Model ###################################
 
 # Generate cross validation
 scores = cross_val_score(RFmodel, X, y, cv=5, scoring='neg_mean_squared_error')

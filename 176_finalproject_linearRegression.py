@@ -1,3 +1,9 @@
+###################################################
+# This script uses linear regression to predict
+# the LCE values of Kim et al. (2023) PNAS dataset.
+####################################################
+
+# Import necessary libraries
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -45,7 +51,7 @@ print(f"R² Score: {r2:.2f}")
 print("Model Coefficients:", linearReg_model.coef_)
 print("Intercept:", linearReg_model.intercept_)
 
-# Plot actual vs. predicted values
+############## Plot actual vs. predicted values #################
 plt.scatter(y_test, y_pred, alpha=0.9, label='Actual vs. Predicted')
 plt.xlabel("Actual LCE Values")
 plt.ylabel("Predicted LCE Values")
@@ -68,7 +74,7 @@ plt.plot([min(y_test), max(y_test)], [min(y_test), max(y_test)], 'r', linestyle=
 plt.legend()
 plt.show()
 
-"""Cross Validation of Linear Regression Model"""
+########### Cross Validation of Linear Regression Model ################
 
 from sklearn.model_selection import cross_val_score
 # Generate cross-validation scores for linear regression

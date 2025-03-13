@@ -12,21 +12,12 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error, r2_score
 
-# Load dataset, fill empty cells with 0
-path = 'drive/MyDrive/Colab Notebooks/176 Final Project/'
-data = pd.read_excel(path+'pnasDataset.xlsx', engine='openpyxl',index_col=0, skiprows=1).fillna(0)
-
-# Check that we are looking at the right columns
-print(data.iloc[:,23])
-print(data.iloc[:,9])
-print(data.iloc[:,22])
-
 # Define features (X) and target variable (y)
-y = data.iloc[:, 23].to_numpy()
-X = data.iloc[:,9:22].to_numpy()
+X = pd.read_csv('data/CE_X.csv').to_numpy()
+y = pd.read_csv('data/CE_y.csv').to_numpy()
 
 # Split dataset into training and test sets
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=37)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
 # Standardize features (mean=0, std=1) for better regression performance
 scaler = StandardScaler()

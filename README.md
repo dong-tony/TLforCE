@@ -10,7 +10,7 @@ This repository contains the data and code necessary to reproduce results discus
 * conductivity_X.csv and conductivity_y.csv contains the features/input and target conductivity values of the electrolyte conductivity dataset from [de Blasio et al. Scientific Data (2024)](https://www.nature.com/articles/s41597-024-03575-8)
     * the code necessary to obtain these processed features are contained in cond_data_proc.py, and the original unprocessed dataset is contained in CALiSol-23 Dataset.csv
 
-The code to construct and evaluate the linear regression, random forest and nueral network models are contained in linreg_main.py, rforest_main.py and nn_main.py. 
+The code to construct and evaluate the linear regression, random forest and nueral network models are contained in linreg_main.py, rforest_main.py and nn_main.py. nn_main.py is associated with nn_helper.py which contains helper functions to construct and evaluate the PyTorch neural network.
 
 The three files can be directly ran to output the results discussed in the paper. The required python packages are listed in requirements.txt. Parameters such as the random seed, neural network architecture, training hyperparameters, etc. can be adjusted directly in the code if desired.
 

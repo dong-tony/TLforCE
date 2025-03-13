@@ -32,12 +32,16 @@ cond_X = scaler.fit_transform(cond_X)
 ce_X_train = scaler.transform(ce_X_train)
 ce_X_test = scaler.transform(ce_X_test)
 
+cond_X_train, cond_X_test, cond_y_train, cond_y_test = train_test_split(
+    cond_X, cond_y, test_size=0.2, random_state=random_seed
+    )
+
 # Define neural network model with 3 layers
 class NeuralNet(nn.Module):
     def __init__(self, input_size):
         super(NeuralNet, self).__init__()
-        self.fc1 = nn.Linear(input_size, 128)
-        self.fc2 = nn.Linear(128, 64)
+        self.fc1 = nn.Linear(input_size, 64)
+        self.fc2 = nn.Linear(64, 64)
         self.fc3 = nn.Linear(64, 1)
     
     def forward(self, x):
@@ -56,13 +60,16 @@ def prepare_data(X, y, bs=32):
 # Prepare datasets
 ce_train_loader = prepare_data(ce_X_train, ce_y_train, bs=10)
 ce_test_loader = prepare_data(ce_X_test, ce_y_test, bs=10)
-cond_train_loader = prepare_data(cond_X, cond_y, bs=32)
+cond_full_loader = prepare_data(cond_X, cond_y, bs=32)
+cond_train_loader = prepare_data(cond_X_train, cond_y_train, bs=32)
+cond_test_loader = prepare_data(cond_X_test, cond_y_test, bs=32)
+
 
 # Initialize model, loss function, and optimizer
 input_size = ce_X.shape[1]
 model = NeuralNet(input_size)
 criterion = nn.MSELoss()
-optimizer = optim.Adam(model.parameters(), lr=0.005)
+optimizer = optim.Adam(model.parameters(), lr=0.001)
 
 # Freeze layers except for the final output layer for transfer learning
 def freeze_layers(model):
@@ -71,7 +78,7 @@ def freeze_layers(model):
     for param in model.fc2.parameters():
         param.requires_grad = False
 
-def train_model(model, train_loader, criterion, optimizer, epochs=500):
+def train_model(model, train_loader, criterion, optimizer, epochs=1000):
     model.train()
     epoch_losses = []
     for epoch in range(epochs):
@@ -89,11 +96,13 @@ def train_model(model, train_loader, criterion, optimizer, epochs=500):
             print(f'Epoch [{epoch + 1}/{epochs}], Loss: {avg_loss:.4f}')
     return model, epoch_losses
 
-model, cond_epoch_losses = train_model(model, cond_train_loader, criterion, optimizer)\
+cond_model, cond_model_epoch_losses = train_model(model, cond_train_loader, criterion, optimizer)
 
-freeze_layers(model)
+transfer_model, cond_epoch_losses = train_model(model, cond_full_loader, criterion, optimizer)\
 
-model, ce_epoch_losses = train_model(model, ce_train_loader, criterion, optimizer)
+freeze_layers(transfer_model)
+
+transfer_model, ce_epoch_losses = train_model(transfer_model, ce_train_loader, criterion, optimizer)
 
 def evaluate_model(model, test_loader, criterion):
     model.eval()
@@ -106,8 +115,9 @@ def evaluate_model(model, test_loader, criterion):
     mse = total_loss / len(test_loader)
     return mse
 
-ce_test_mse = evaluate_model(model, ce_test_loader, criterion)
-print(f'CE Test MSE: {ce_test_mse}')
+cond_test_mse = evaluate_model(cond_model, cond_test_loader, criterion)
+print(f'Conductivity Test MSE: {cond_test_mse}')
+ce_test_mse = evaluate_model(transfer_model, ce_test_loader, criterion)
 
 # Train model from scratch on CE data
 model_scratch = NeuralNet(input_size)
@@ -118,7 +128,4 @@ model_scratch, ce_scratch_epoch_losses = train_model(model_scratch, ce_train_loa
 # Evaluate model trained from scratch and calculate MSE
 ce_scratch_test_mse = evaluate_model(model_scratch, ce_test_loader, criterion)
 print(f'CE Test MSE (Scratch): {ce_scratch_test_mse}')
-
-# Compare results
 print(f'CE Test MSE (Transfer Learning): {ce_test_mse}')
-print(f'CE Test MSE (Scratch): {ce_scratch_test_mse}')

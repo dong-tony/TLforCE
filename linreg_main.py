@@ -42,7 +42,7 @@ print(f"R² Score: {r2:.2f}")
 print("Model Coefficients:", linearReg_model.coef_)
 print("Intercept:", linearReg_model.intercept_)
 
-############## Plot actual vs. predicted values #################
+############## Plot predicted vs. actual values #################
 plt.scatter(y_test, y_pred, alpha=0.9, label='Actual vs. Predicted')
 plt.xlabel("Actual LCE Values")
 plt.ylabel("Predicted LCE Values")

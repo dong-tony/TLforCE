@@ -13,6 +13,6 @@ This repository contains the data and code necessary to reproduce results discus
 
 The code to construct and evaluate the linear regression, random forest and nueral network models are contained in linreg_main.py, rforest_main.py and nn_main.py. 
 
-The three files can be directly ran to output the results discussed in the paper. The required python packages are listed in requirements.txt. Parameters such as the random seed, neural network architecture, training hyperparameters, etc. can be adjusted directly in the code if desired.
+The three files can be directly run to output the results discussed in the paper. The required python packages are listed in requirements.txt. Parameters such as the random seed, neural network architecture, training hyperparameters, etc. can be adjusted directly in the code if desired.
 
 
